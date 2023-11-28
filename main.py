@@ -31,7 +31,7 @@ preprocessor = ColumnTransformer(
 
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(d, y, test_size=0.5, random_state=10)
+X_train, X_test, y_train, y_test = train_test_split(d, y, test_size=0.2, random_state=42)
 
 X_train_processed = preprocessor.fit_transform(X_train)
 X_test_processed = preprocessor.transform(X_test)
@@ -46,7 +46,6 @@ y_pred = model.predict(X_test_processed)
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
-print(y_pred)
 
 print(f'Mean Squared Error: {mse:.2f}')
 print(f'R-squared: {r2:.2f}')
