@@ -15,34 +15,22 @@ df = cleanr.cleanDataset('Fraud.csv')
 mpl.rcParams['agg.path.chunksize'] = 10000
 
 d = df.drop('isFraud', axis=1)
+col = [['amount', 'oldbalanceOrg', 'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest']]
 y = df['isFraud']
 
-
-# Identify categorical columns and numerical columns
-categorical_cols = d.select_dtypes(include=['string']).columns
-numerical_cols = d.select_dtypes(include=['number']).columns
-
 # Create a column transformer for preprocessing
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('num', 'passthrough', numerical_cols),
-        ('cat', OneHotEncoder(), categorical_cols)
-    ])
 
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(d, y, test_size=0.2, random_state=42)
-
-X_train_processed = preprocessor.fit_transform(X_train)
-X_test_processed = preprocessor.transform(X_test)
+X_train, X_test, y_train, y_test = train_test_split(col, y, test_size=0.2, random_state=42)
 
 # Create a linear regression model
 model = LinearRegression()
 
 # Train the model on the training set
-model.fit(X_train_processed, y_train)
+model.fit(X_train, y_train)
 
-y_pred = model.predict(X_test_processed)
+y_pred = model.predict(X_test)
 
 mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
