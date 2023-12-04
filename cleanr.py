@@ -19,18 +19,18 @@ def cleanDataset(dataset) :
     #drop chaque partie du dataframe selon les conditions
 
     #créé un nouveau dataframe (inplace = False --> ne modifie pas directement la variable df mais retourne le résultat de l'opération)
-    #print('Dropping useless Transfer ...', end="")
-    #filtereddf = df.drop(df[impossibleTransfer].index)
-    #print('Done')
+    print('Dropping useless Transfer ...', end="")
+    filtereddf = df.drop(df[impossibleTransfer].index)
+    print('Done')
     ##modifie directement le dataset ou le drop est effectué, car on a déjà créé le nouveau dataframe
-    #print('Dropping useless cashout ...', end="")
-    #filtereddf.drop(df[nonCoherentCashout].index, inplace=True)
-    #print('Done')
-    #print('Dropping useless cashin ...', end="")
-    #filtereddf.drop(df[nonCoherentCashIn].index, inplace=True)
-    #print('Done')
-    #print('Dropping useless Payment ...', end="")
-    #filtereddf.drop(df[nonCoherentPayment].index, inplace=True)
-    #print('Done')
-
-    return df
+    print('Dropping useless cashout ...', end="")
+    filtereddf.drop(filtereddf[nonCoherentCashout].index, inplace=True)
+    print('Done')
+    print('Dropping useless cashin ...', end="")
+    filtereddf.drop(filtereddf[nonCoherentCashIn].index, inplace=True)
+    print('Done')
+    print('Dropping useless Payment ...', end="")
+    filtereddf.drop(filtereddf[nonCoherentPayment].index, inplace=True)
+    print('Done')
+    filtereddf.drop('isFraud', axis=1).to_csv('cleaned.csv')
+    return filtereddf
