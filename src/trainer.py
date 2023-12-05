@@ -20,7 +20,7 @@ features_encoded.drop(['type'], axis=1, inplace=True)
 
 # column to predict the value of
 criteria = df['isFraud']
-s
+
 model_type: str = input("Choose your model from the following: \nLogistic Regression (lr)\nHierarchical Clustering (hc) \nRandomForest (rf)")
 match(model_type):
     case 'lr':
