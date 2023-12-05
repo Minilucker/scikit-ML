@@ -32,7 +32,9 @@ def autoImputNullValuesBasedOnType(dataframe: DataFrame):
                 continue
             print("----------------------------------------------------------------------------------------------------")
             print(f"Null found in column with name: {column_name}")
-            if dataframe[column_name].dtype != 'int64' and dataframe[column_name].dtype != 'float64':
+            # on ne check que si c'est de type float64, car si il y a un null la colonne devient automatiquement de type float64 a moins d'être un dtype object
+            # à améliorer selon les autres types possibles
+            if dataframe[column_name].dtype != 'float64':
                 print(f"Column {column_name} is of type String")
                 available_values = dataframe[column_name].dropna().unique()
                 print(f"Imputing random value from these: {available_values} ...", end=" ")
@@ -86,7 +88,7 @@ def cleanDataset(dataset) :
         
 
 
-    print(filtereddf)
+    print(filtereddf['type'].dtype)
     autoImputNullValuesBasedOnType(filtereddf)
     #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte / le compte de destination ne reçoit pas exactement la somme envoyée
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
