@@ -24,6 +24,8 @@ def isNullCellInColumn(column: Series):
         return True
     else: 
         return False
+    
+
 # fonction pour auto imput des valeurs lorsqu'une cellule est null, 
 # ne prend pas en compte les relation entre chaque colonne d'une même ligne
 def autoImputNullValuesBasedOnType(dataframe: DataFrame):
@@ -70,6 +72,7 @@ def checkIfTrulyFloatValue(series):
         return True
     else:
         return False
+
 
 def clearWrongValues(dataframe: DataFrame):
     #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte / le compte de destination ne reçoit pas exactement la somme envoyée
