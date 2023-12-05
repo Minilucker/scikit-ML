@@ -1,31 +1,61 @@
 
 import pandas as pd
-from pandas import DataFrame
+from pandas import DataFrame, Series
 import numpy as np
 
+def isBoolColumn(column: Series):
+    column_values = column
+    column_minValue = 0
+    column_maxValue = 0
+    for value in column_values:
+        if value > column_maxValue: column_maxValue = value
+        if value < column_minValue: column_minValue = value    
+    # je considère qu'une colonne contenant des vrais float n'aura jamais ses valeure maximales et minimale respectivement à 1 ou 0 et 0
+    if column_minValue == 0 and (column_maxValue == 1 or column_maxValue == 0):
+        return True
+    else:
+        return False
+
+
+def isNullCellInColumn(column: Series):
+    nullcounter = column.isnull().sum()
+    if nullcounter > 0:
+        return True
+    else: 
+        return False
 # fonction pour auto imput des valeurs lorsqu'une cellule est null, 
 # ne prend pas en compte les relation entre chaque colonne d'une même ligne
 def autoImputNullValuesBasedOnType(dataframe: DataFrame):
     for column_name in dataframe.columns:
+            if not isNullCellInColumn(dataframe[column_name]):
+                print(f'null value not found')
+                continue
+            print("----------------------------------------------------------------------------------------------------")
+            print(f"Null found in column with name: {column_name}")
             if dataframe[column_name].dtype != 'int64' and dataframe[column_name].dtype != 'float64':
+                print(f"Column {column_name} is of type String")
                 available_values = dataframe[column_name].dropna().unique()
+                print(f"Imputing random value from these: {available_values} ...", end=" ")
                 dataframe[column_name].fillna(np.random.choice(available_values), inplace=True)
+                print("Done")
+                print("----------------------------------------------------------------------------------------------------")
             elif dataframe[column_name].dtype == 'float64' and checkIfTrulyFloatValue(dataframe[column_name]):
+                print(f"Column {column_name} is of type Float")
+                print(f"Imputing mean value from column {column_name}")
                 dataframe[column_name].fillna(dataframe[column_name].mean(), inplace=True)
+                print("----------------------------------------------------------------------------------------------------")
             else: 
-
-                column_values = dataframe[column_name]
-                column_minValue = 0
-                column_maxValue = 0
-                for value in column_values:
-                    if value > column_maxValue: column_maxValue = value
-                    if value < column_minValue: column_minValue = value
-                # je considère qu'une colonne contenant des vrais float n'aura jamais ses valeure maximales et minimale respectivement à 1 ou 0 et 0
-                if column_minValue == 0 and (column_maxValue == 1 or column_maxValue == 0):
-                    print("column is boolean")
+                print(f"Column {column_name} is neither String nor Float, finding out...", end=" ")
+                if isBoolColumn(dataframe[column_name]):
+                    print(f"Column {column_name} is a boolean column")
                     dataframe[column_name].fillna(value=0, inplace=True)
+                    print("----------------------------------------------------------------------------------------------------")
+                # cas ou c'est un int64
                 else: 
+                    print(f"Column {column_name} is an int column")
                     dataframe[column_name] = dataframe[column_name].interpolate(method='linear').astype(int)
+                    print(f"added value based on neighbour values")
+                    print("----------------------------------------------------------------------------------------------------")
             
 
 def checkIfTrulyFloatValue(series):
@@ -52,16 +82,12 @@ def cleanDataset(dataset) :
     #créé un nouveau dataframe (inplace = False --> ne modifie pas directement la variable df mais retourne le résultat de l'opération)
     filtereddf = df 
     nullcounter = 0
-    for column_name in filtereddf.columns:
-        nullcounter += filtereddf[column_name].isnull().sum()
 
-    if nullcounter > 0:
-        autoImputNullValuesBasedOnType(filtereddf)
         
 
 
     print(filtereddf)
-
+    autoImputNullValuesBasedOnType(filtereddf)
     #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte / le compte de destination ne reçoit pas exactement la somme envoyée
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     #impossibleTransfer = (filtereddf['type'] == 'TRANSFER') & ((filtereddf['amount'] > filtereddf['oldbalanceOrg']) | (filtereddf['amount'] + filtereddf['oldbalanceDest'] != filtereddf['newbalanceDest']))
