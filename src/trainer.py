@@ -4,10 +4,18 @@ import cleanr
 import logisticRegressor
 import HierarchicalClustering
 import RandomForest
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', '--dataset', help='the dataset to use')
+args = parser.parse_args()
+
+if not args.dataset:
+    print("python3 <location>/trainer.py --dataset <location>/your_dataset")
+    exit(1)
 
 print("Preparing dataset ...")
-df = cleanr.cleanDataset('../datasets/Fraud.csv')
+df = cleanr.cleanDataset(f'{args.dataset}')
 
 # relevant columns
 features = df[['isFlaggedFraud', 'step','oldbalanceOrg', 'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest', 'amount', 'type']]

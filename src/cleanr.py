@@ -3,6 +3,12 @@ from turtle import clear
 import pandas as pd
 from pandas import DataFrame, Series
 import numpy as np
+import os
+#inject null values in a datasets
+def injectNullValues(dataframe: DataFrame):
+    for column in dataframe.columns:
+        dataframe.loc[dataframe.sample(frac=0.1).index, column] = np.nan
+    dataframe.to_csv('datasets/Fraud_nulls.csv')
 
 def isBoolColumn(column: Series):
     column_values = column
@@ -54,7 +60,7 @@ def autoImputNullValuesBasedOnType(dataframe: DataFrame):
                     print(f"Column {column_name} is a boolean column")
                     dataframe[column_name].fillna(value=0, inplace=True)
                     print("----------------------------------------------------------------------------------------------------")
-                # cas ou c'est un int64
+                # cas où c'est un int64
                 else: 
                     print(f"Column {column_name} is an int column")
                     dataframe[column_name] = dataframe[column_name].interpolate(method='linear').astype(int)
@@ -108,18 +114,27 @@ def clearWrongValues(dataframe: DataFrame):
     dataframe.drop(dataframe[nonCoherentPayment].index, inplace=True)
     print('Done')
 
-def cleanDataset(dataset) :
+def cleanDataset(dataset: str) :
+    
     df = pd.read_csv(dataset)
 
     df.drop(['nameDest', 'nameOrig'], axis=1)
     
     filtereddf = df 
+
+    file = dataset.split('\\').pop()
+
+    pathString = '\\'.join(dataset.split('\\')[ : -1]) + '\\'
+    
+    if (os.path.isfile(path=f'{pathString}{file}')): 
+        print('cached file exists, skipping dataset cleaning')
+        return df
     
     autoImputNullValuesBasedOnType(filtereddf)
     clearWrongValues(filtereddf)
 
     
-    filtereddf.drop('isFraud', axis=1).to_csv('cleaned.csv')
+    filtereddf.drop('isFraud', axis=1).to_csv(f"{pathString}cleaned_{file}")
 
     print(f"total number of Rows: {filtereddf['step'].__len__()}")
     print(f"total number of Frauds: {filtereddf[filtereddf['isFraud'] == 1]['isFraud'].sum()}")
@@ -127,3 +142,4 @@ def cleanDataset(dataset) :
     return filtereddf
 
 #cleanDataset('test.csv')
+injectNullValues(pd.read_csv('datasets/Fraud.csv'))
