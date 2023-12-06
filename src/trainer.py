@@ -5,13 +5,19 @@ import logisticRegressor
 import HierarchicalClustering
 import RandomForest
 import argparse
+import linearRegression
+import ridgeRegression
+import lassoRegression
+import decisionTree
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dataset', help='the dataset to use')
 args = parser.parse_args()
 
+dataset = args.dataset.replace('..', '').replace('/', '').replace('\\', '')
 if not args.dataset:
-    print("python3 <location>/trainer.py --dataset <location>/your_dataset")
+    print("python3 <location>/trainer.py --dataset your_dataset")
+    print("make sure to include your dataset in 'datasets/' folder'")
     exit(1)
 
 print("Preparing dataset ...")
@@ -28,12 +34,20 @@ features_encoded.drop(['type'], axis=1, inplace=True)
 
 # column to predict the value of
 criteria = df['isFraud']
-
-model_type: str = input("Choose your model from the following: \nLogistic Regression (lr)\nHierarchical Clustering (hc) \nRandomForest (rf)")
+print(len(features_encoded))
+model_type: str = input("Choose your model from the following: \nLogistic Regression (loReg)\nHierarchical Clustering (hc) \nRandomForest (rf)\nLinear Regression (liReg)\n")
 match(model_type):
-    case 'lr':
+    case 'loReg':
         logisticRegressor.logisticRegressor(features_encoded, criteria)
     case 'hc':
-        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded, criteria)
+        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded)
     case 'rf':
         RandomForest.randomForestClassificator(features_encoded, criteria)
+    case 'liReg':
+        linearRegression.linearRegressor(features_encoded, criteria)
+    case 'riReg':
+        ridgeRegression.ridgeRegressor(features_encoded, criteria)
+    case 'laReg': 
+        lassoRegression.lassoRegressor(features_encoded, criteria)
+    case 'dt':
+        decisionTree.decisionTreeClassifier(features_encoded, criteria)

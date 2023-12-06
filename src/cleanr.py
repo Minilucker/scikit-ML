@@ -115,31 +115,19 @@ def clearWrongValues(dataframe: DataFrame):
     print('Done')
 
 def cleanDataset(dataset: str) :
-    
-    df = pd.read_csv(dataset)
+    df = pd.read_csv(f"datasets/{dataset}")
 
-    df.drop(['nameDest', 'nameOrig'], axis=1)
-    
-    filtereddf = df 
+    filtereddf = df.drop(['nameDest', 'nameOrig'], axis=1) 
 
-    file = dataset.split('\\').pop()
-
-    pathString = '\\'.join(dataset.split('\\')[ : -1]) + '\\'
-    
-    if (os.path.isfile(path=f'{pathString}{file}')): 
-        print('cached file exists, skipping dataset cleaning')
-        return df
-    
-    autoImputNullValuesBasedOnType(filtereddf)
     clearWrongValues(filtereddf)
+    autoImputNullValuesBasedOnType(filtereddf)
 
-    
-    filtereddf.drop('isFraud', axis=1).to_csv(f"{pathString}cleaned_{file}")
+    filtereddf.drop('isFraud', axis=1).to_csv(f"testing_datasets/testing_{dataset}")
 
     print(f"total number of Rows: {filtereddf['step'].__len__()}")
     print(f"total number of Frauds: {filtereddf[filtereddf['isFraud'] == 1]['isFraud'].sum()}")
 
     return filtereddf
 
-#cleanDataset('test.csv')
-injectNullValues(pd.read_csv('datasets/Fraud.csv'))
+#cleanDataset('datasets\Fraud_nulls.csv')
+#injectNullValues(pd.read_csv('datasets/Fraud.csv'))

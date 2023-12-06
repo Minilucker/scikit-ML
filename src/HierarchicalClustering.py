@@ -35,12 +35,6 @@ def hierarchicalClusteringModeler(relevant_columns: DataFrame, target: Series):
     # Perform hierarchical clustering
     linkage_matrix = linkage(data_scaled, method='ward')
 
-    # Plot dendrogram
-    #dendrogram(linkage_matrix)
-    #plt.title('Hierarchical Clustering Dendrogram')
-    #plt.xlabel('Samples')
-    #plt.ylabel('Distance')
-    #plt.show()
 
     # Determine the number of clusters based on the dendrogram
     # You can choose a threshold based on the dendrogram to cut the tree and get clusters
@@ -48,11 +42,17 @@ def hierarchicalClusteringModeler(relevant_columns: DataFrame, target: Series):
 
     cluster_model = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
     clusters = cluster_model.fit_predict(data_scaled)
-    binary_clusters = [1 if cluster == clusters.max() else 0 for cluster in clusters]
 
 
-    accuracy_avg = accuracy_score(data_scaled, clusters)
+    accuracy_avg = silhouette_score(data_scaled, clusters)
     confusion = confusion_matrix(data_scaled, clusters)
 
-    print(f'accuracy Score: {accuracy_avg}')
+    print(f'silhouette Score: {accuracy_avg}')
     print(f'Confusion: {confusion}')
+
+        # Plot dendrogram
+    dendrogram(linkage_matrix)
+    plt.title('Hierarchical Clustering Dendrogram')
+    plt.xlabel('Samples')
+    plt.ylabel('Distance')
+    plt.show()

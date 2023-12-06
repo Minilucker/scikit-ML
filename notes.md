@@ -16,20 +16,20 @@ total frauds : 4116 rows
 
 ## Supervised
 
-### Random Forest Classification
 
-Prend très longtemps à entrainer sur ce dataset (+ de 3 heures)
+### Linear Regression
 
-#### rapport de construction du modèle
+Rapide à entrainer (- 1 min)
 
-L'accuracy dans le rapport est arrondie, le résultat est affiché à 1 mais correspond en réalité au résultat obtenu plus haut
-```
-Accuracy: 0.9995203051597176
-            #true negative    #false positive   #true positive    #false negative
-Confusion: [[433122           21]               [187              279]]
+#### Results
 
 ```
+Accuracy: 0.9990959597240833
+Confusion Matrix:
+[[866335      0]
+ [   784     99]]
 
+```
 ### Logistic Regression
 
 Rapide à entrainer (- 1 min)
@@ -42,6 +42,56 @@ Accuracy: 0.9994914773447968
 Confusion: [[866227           108]              [333              550]]
 
 ```
+
+### Ridge Regression
+
+Rapide à entrainer (-1 min)
+
+#### Results
+
+Accuracy: 0.9990533070363066
+Confusion Matrix:
+[[899123      2]
+ [   850      0]]
+
+
+
+### Lasso Regression
+
+Rapide à entrainer (-1 min)
+
+#### Results
+
+Accuracy: 0.9990533070363066
+Confusion Matrix:
+[[899123      2]
+ [   850      0]]
+
+### Decision Tree
+
+Rapide à entrainer (- 3 min)
+
+#### Results 
+
+Accuracy: 0.999303313980944
+Confusion Matrix:
+[[898853    272]
+ [   355    495]]
+
+
+### Random Forest Classification
+
+Prend très longtemps à entrainer sur ce dataset (+ de 3 heures)
+
+#### Results
+
+```
+Accuracy: 0.9995203051597176
+            #true negative    #false positive   #true positive    #false negative
+Confusion: [[433122           21]               [187              279]]
+
+```
+
 ## Unsupervised
 
 ### Hierarchical Clustering 
