@@ -53,5 +53,3 @@ def logisticRegressor(relevant_columns, target):
     print(y_test)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
-
-    dump(model, 'models/logisticRegression.joblib')

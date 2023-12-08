@@ -31,5 +31,3 @@ def randomForestClassificator(relevant_columns, target):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f'Confusion: \n{confusion}')
-
-    dump(model, 'fraudDetector.joblib')
