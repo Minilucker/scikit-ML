@@ -38,9 +38,8 @@ Rapide à entrainer (- 1 min)
 
 ```
 Accuracy: 0.9994914773447968
-            #true negative    #false positive   #true positive    #false negative
-Confusion: [[866227           108]              [333              550]]
-
+Confusion: [[866227    108]
+            [   333    550]]
 ```
 
 ### Ridge Regression
@@ -48,12 +47,12 @@ Confusion: [[866227           108]              [333              550]]
 Rapide à entrainer (-1 min)
 
 #### Results
-
+```
 Accuracy: 0.9990533070363066
 Confusion Matrix:
 [[899123      2]
  [   850      0]]
-
+```
 
 
 ### Lasso Regression
@@ -61,23 +60,23 @@ Confusion Matrix:
 Rapide à entrainer (-1 min)
 
 #### Results
-
+```
 Accuracy: 0.9990533070363066
 Confusion Matrix:
 [[899123      2]
  [   850      0]]
-
+```
 ### Decision Tree
 
 Rapide à entrainer (- 3 min)
 
 #### Results 
-
+```
 Accuracy: 0.999303313980944
 Confusion Matrix:
 [[898853    272]
  [   355    495]]
-
+```
 
 ### Random Forest Classification
 
@@ -91,18 +90,57 @@ Accuracy: 0.9995203051597176
 Confusion: [[433122           21]               [187              279]]
 
 ```
-
-## Unsupervised
-
-### Hierarchical Clustering 
-
-Bien moins précis que la régression et le Tree-Based, ne peux pas utiliser un dataset trop large (celui utilisé ici est égale a 5% du dataset de 4M de lignes) car le modèle utilise des opérations trop complexes et demanderais trop de mémoire pour un dataset plus grand (68 TiB pour 4M de lignes à process), beaucoup de faux positifs ( ce qui reste quand même mieux que beaucoup de faux négatifs)
+### Gradient Boosting Regression
 
 #### Results
 
 ```
-Accuracy: 0.7461254612546125
-            #true negative    #false positive   #true positive    #false negative
-Confusion: [[16170           5484]             [20               6]]
+Accuracy: 0.9994188312511963
+Confusion: [[866324     11]
+            [   493    390]]
+```
+### XGBoost
 
+#### Results
+```
+Accuracy: 0.9995537454250257
+Confusion: [[866311     24]
+ [   363    520]]
+```
+### LightGMB Regressor
+
+#### Results 
+```
+Accuracy: 0.9995698890013814
+Confusion: [[866318     17]
+            [   356    527]]
+```
+## Unsupervised
+
+### Hierarchical Clustering 
+
+Non fiable car il n'est pas possible de tester avec suffisamment de données sans avoir une énorme quantité de RAM, avec 16 Go de RAM on peut aller jusqu'a 1% du dataset de 4M de ligne, ce qui donne une accuracy qui varie de 0.1 a 0.9, selon les données de test.
+
+#### Results
+
+```
+Accuracy: 0.9362389023405973
+Confusion: [[8120  547]
+            [   6    0]]
+```
+
+### Gaussian Mixture
+
+#### Results
+```
+Accuracy: 0.9989818015769968
+confusion: [[866335      0]
+            [   883      0]]
+```
+
+### KNeighbourClassifier
+
+#### Results
+```
+Accuracy: 0.9993346540316276
 ```

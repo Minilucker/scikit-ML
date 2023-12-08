@@ -1,58 +1,42 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from pandas import DataFrame, Series
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.metrics import confusion_matrix, silhouette_score, accuracy_score
 import cleanr
 
-# Load your dataset (replace 'your_dataset.csv' with your actual dataset)
-#data = cleanr.cleanDataset('Fraud.csv')
-#
-## Assuming your dataset has a 'fraud' column indicating whether a transaction is fraudulent or not
-## If not, you might need labeled data to evaluate the clustering performance
-## Fractionate the dataset
-#labels = data['isFraud'].sample(frac=fraction)
-#
-## Drop non-numeric columns if any (assuming transactions are represented by numerical features)
-#data = data.drop(['nameDest', 'nameOrig'], axis=1)
-#
-#
-#onehot_encoder = OneHotEncoder(sparse_output=False, drop='first')
-#encoded_columns = onehot_encoder.fit_transform(data[['type']])
-#data_encoded = pd.concat([data.reset_index(drop=True), pd.DataFrame(encoded_columns, columns=onehot_encoder.get_feature_names_out(['type']))], axis=1)
-#data_encoded.drop(['type'], axis=1, inplace=True)
+def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series):
+ 
+    print('Splitting ...', end="")
+    dataframe = dataframe.sample(frac=0.01)
+    target = target.sample(frac=0.01)
+    X_train, X_test, y_train, y_test = train_test_split(dataframe, target, test_size=0.2, random_state=42)
+    print("Done")
 
-def hierarchicalClusteringModeler(relevant_columns: DataFrame, target: Series):
-    fraction = 0.005
-    relevant_columns = relevant_columns.sample(frac=fraction)
-    target = target.sample(frac=fraction)
-    # Standardize the data
-    scaler = StandardScaler()
-    data_scaled = scaler.fit_transform(relevant_columns)
+    # use the LogisticRegression to properly separate the fraud data from the normal data
+    print("Creating model ...", end="")
+    # setting max_iteration number to reach convergence(= the most optimum result with the least failure,
+    # whereas with 100 max_iter we can only reach what's called local optima a.k.a the most optimised model for the 100 given iterations)
+    model = AgglomerativeClustering()
+    print("Done\nBeginning training...", end="")
 
-    # Perform hierarchical clustering
-    linkage_matrix = linkage(data_scaled, method='ward')
+    # train the model with the given dataset
+    model.fit(X_train, y_train)
+    print("Done")
 
+    # test the model with a sample of the dataset it was built with
+    y_pred = model.fit_predict(X_test)
+    print(y_test)
+    # accuracy, the percentage of success in the prediction (0 is bad, whereas 1 is 100% accuracy, 1 should not be possible and might be an error)
 
-    # Determine the number of clusters based on the dendrogram
-    # You can choose a threshold based on the dendrogram to cut the tree and get clusters
-    # Alternatively, you can use AgglomerativeClustering with a specific number of clusters
+    acc = accuracy_score(y_test, y_pred)
+    confusion = confusion_matrix(y_test, y_pred)
 
-    cluster_model = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
-    clusters = cluster_model.fit_predict(data_scaled)
-
-
-    accuracy_avg = silhouette_score(data_scaled, clusters)
-    confusion = confusion_matrix(data_scaled, clusters)
-
-    print(f'silhouette Score: {accuracy_avg}')
-    print(f'Confusion: {confusion}')
-
-        # Plot dendrogram
-    dendrogram(linkage_matrix)
-    plt.title('Hierarchical Clustering Dendrogram')
-    plt.xlabel('Samples')
-    plt.ylabel('Distance')
-    plt.show()
+    # confusion, return an array containing 2 arrays, each containing respectively: 
+    # - true positive (clean data predicted to be clean data) and false positive (fraud predicted to be clean data),
+    # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
+    print(f'Accuracy: {acc}')
+    print(f"Confusion: \n{confusion}")

@@ -47,9 +47,11 @@ def logisticRegressor(relevant_columns, target):
     confusion = confusion_matrix(y_test, y_pred)
 
     # confusion, return an array containing 2 arrays, each containing respectively: 
-    # - true negative (clean data predicted to be clean data) and false positive (clean data predicted to be fraud data),
-    # - true positive (fraud data predicted to be fraud data) and false negative (fraud data predicted to be clean data)
+    # - true positive (clean data predicted to be clean data) and false positive (fraud predicted to be clean data),
+    # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
+    print(y_pred)
+    print(y_test)
     print(f'Accuracy: {acc}')
-    print(f"Confusion: {confusion}")
+    print(f"Confusion: \n{confusion}")
 
     dump(model, 'models/logisticRegression.joblib')

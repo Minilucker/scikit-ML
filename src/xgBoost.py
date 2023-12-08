@@ -1,12 +1,15 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from xgboost import XGBRegressor
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
 
+# Assuming your DataFrame is named 'df' and the target category is 'target_category'
+# Make sure to replace 'target_category' with the actual column name in your DataFrame
 
-
-def linearRegressor(dataframe, target):
-    
+def xgbooster(dataframe: pd.DataFrame, target: pd.Series):    
+   
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, target, test_size=0.2, random_state=42)
     print("Done")
@@ -15,7 +18,7 @@ def linearRegressor(dataframe, target):
     print("Creating model ...", end="")
     # setting max_iteration number to reach convergence(= the most optimum result with the least failure,
     # whereas with 100 max_iter we can only reach what's called local optima a.k.a the most optimised model for the 100 given iterations)
-    model = LinearRegression()
+    model = XGBRegressor()
     print("Done\nBeginning training...", end="")
 
     # train the model with the given dataset
@@ -31,7 +34,7 @@ def linearRegressor(dataframe, target):
     confusion = confusion_matrix(y_test, y_pred_binary)
 
     # confusion, return an array containing 2 arrays, each containing respectively: 
-    # - true positive (clean data predicted to be clean data) and false positive (fraud predicted to be clean data),
-    # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
+    # - true negative (clean data predicted to be clean data) and false positive (clean data predicted to be fraud data),
+    # - true positive (fraud data predicted to be fraud data) and false negative (fraud data predicted to be clean data)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")

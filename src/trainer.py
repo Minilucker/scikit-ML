@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 import cleanr
@@ -9,9 +10,15 @@ import linearRegression
 import ridgeRegression
 import lassoRegression
 import decisionTree
+import GradientBoosting
+import xgBoost
+import lightgbmregressor
+import kMean
+import gaussianMixture
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dataset', help='the dataset to use')
+parser.add_argument('-m', '--mode', help='the algorithm to use from the following: \nLogistic Regression (loReg)\nLinear Regression (liReg)\nRidge Regression (riReg)\nLasso Regression (laReg)\nDecision Tree (dt)\nRandomForest (rf)\nGradient Boosting (gbr)\nXGBoost (xgb)\nLightGBM Regressor (lgbr)\n K Mean (kmean)\nHierarchical Clustering (hc)\nGaussian Mixture Model (gmm)\n')
 args = parser.parse_args()
 
 dataset = args.dataset.replace('..', '').replace('/', '').replace('\\', '')
@@ -34,20 +41,44 @@ features_encoded.drop(['type'], axis=1, inplace=True)
 
 # column to predict the value of
 criteria = df['isFraud']
-print(len(features_encoded))
-model_type: str = input("Choose your model from the following: \nLogistic Regression (loReg)\nHierarchical Clustering (hc) \nRandomForest (rf)\nLinear Regression (liReg)\n")
+model_type: str = args.mode
+starting_float = time.time()
 match(model_type):
     case 'loReg':
+        print("starting in Logistic regression")
         logisticRegressor.logisticRegressor(features_encoded, criteria)
-    case 'hc':
-        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded)
-    case 'rf':
-        RandomForest.randomForestClassificator(features_encoded, criteria)
     case 'liReg':
+        print("starting in Linear regression mode")
         linearRegression.linearRegressor(features_encoded, criteria)
     case 'riReg':
+        print("starting in Ridge regression mode")
         ridgeRegression.ridgeRegressor(features_encoded, criteria)
     case 'laReg': 
+        print("starting in Lasso regression mode")
         lassoRegression.lassoRegressor(features_encoded, criteria)
     case 'dt':
+        print("starting in Decision Tree mode")
         decisionTree.decisionTreeClassifier(features_encoded, criteria)
+    case 'rf':
+        print("starting in Random Forest Classifier mode")
+        RandomForest.randomForestClassificator(features_encoded, criteria)
+    case 'gbr':
+        print("starting in Gradient Boosting Regression mode")
+        GradientBoosting.GradientBoostingRegress(features_encoded, criteria)
+    case 'xgb':
+        print("starting in xgbooster mode")
+        xgBoost.xgbooster(features_encoded, criteria)
+    case 'lgbr':
+        print("starting in Light GMB Regression mode")
+        lightgbmregressor.lightbgmregressor(features_encoded, criteria)
+    case 'kmean':
+        print("starting in K Mean Cluster mode")
+        kMean.kmeancluster(features_encoded, criteria)
+    case 'hc':
+        print("starting in Hierarchical Cluster mode")
+        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded, criteria)
+    case 'gmm':
+        print("starting in Gaussian Mixture mode")
+        gaussianMixture.gaussianMixture(features_encoded, criteria)
+
+print(f"total time: {time.time() - starting_float}")

@@ -1,11 +1,11 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
 
-
-
-def linearRegressor(dataframe, target):
+# Assuming your DataFrame is named 'df' and the target category is 'target_category'
+# Make sure to replace 'target_category' with the actual column name in your DataFrame
+def GradientBoostingRegress(dataframe: pd.DataFrame, target: pd.Series):
     
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, target, test_size=0.2, random_state=42)
@@ -15,7 +15,7 @@ def linearRegressor(dataframe, target):
     print("Creating model ...", end="")
     # setting max_iteration number to reach convergence(= the most optimum result with the least failure,
     # whereas with 100 max_iter we can only reach what's called local optima a.k.a the most optimised model for the 100 given iterations)
-    model = LinearRegression()
+    model = GradientBoostingClassifier()
     print("Done\nBeginning training...", end="")
 
     # train the model with the given dataset
