@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 
 # Assuming your DataFrame is named 'df' and the target category is 'target_category'
 # Make sure to replace 'target_category' with the actual column name in your DataFrame
@@ -35,3 +35,4 @@ def GradientBoostingRegress(dataframe: pd.DataFrame, target: pd.Series):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
+    print(f'f1 score: {f1_score(y_test, y_pred_binary)}')

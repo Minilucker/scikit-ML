@@ -2,10 +2,9 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score
 from sklearn.preprocessing import OneHotEncoder
 from joblib import dump
-import cleanr
 
 ## clean dataset of useless data
 #df = cleanr.cleanDataset('Fraud.csv')
@@ -53,3 +52,4 @@ def logisticRegressor(relevant_columns, target):
     print(y_test)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
+    print(f'f1 score: {f1_score(y_test, y_pred)}')

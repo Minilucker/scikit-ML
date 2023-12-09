@@ -1,20 +1,20 @@
 import time
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder
-import cleanr
-import logisticRegressor
-import HierarchicalClustering
-import RandomForest
+from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 import argparse
-import linearRegression
-import ridgeRegression
-import lassoRegression
-import decisionTree
-import GradientBoosting
-import xgBoost
-import lightgbmregressor
-import kMean
-import gaussianMixture
+import src.cleanr as cleanr
+import src.logisticRegressor as logisticRegressor
+import src.HierarchicalClustering as HierarchicalClustering
+import src.RandomForest as RandomForest
+import src.linearRegression as linearRegression
+import src.ridgeRegression as ridgeRegression
+import src.lassoRegression as lassoRegression
+import src.decisionTree as decisionTree
+import src.GradientBoosting as GradientBoosting 
+import src.xgBoost as xgBoost
+import src.lightgbmregressor as lightgbmregressor
+import src.kMean as kMean
+import src.gaussianMixture as gaussianMixture
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dataset', help='the dataset to use')

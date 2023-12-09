@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
 
 def decisionTreeClassifier(dataframe: pd.DataFrame, criteria: pd.Series):
@@ -31,3 +31,4 @@ def decisionTreeClassifier(dataframe: pd.DataFrame, criteria: pd.Series):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f'confusion: \n{conf}')
+    print(f'f1 score: {f1_score(y_test, y_pred)}')

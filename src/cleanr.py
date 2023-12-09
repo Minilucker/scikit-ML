@@ -83,29 +83,22 @@ def checkIfTrulyFloatValue(series):
 def clearWrongValues(dataframe: DataFrame):
     #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte / le compte de destination ne reçoit pas exactement la somme envoyée
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
-    impossibleTransfer = (dataframe['type'] == 'TRANSFER') & ((dataframe['amount'] > dataframe['oldbalanceOrg']) | (dataframe['amount'] + dataframe['oldbalanceDest'] != dataframe['newbalanceDest']))
+    impossibleTransfer = (dataframe['type'] == 'TRANSFER') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
 
     ##modifie directement le dataset ou le drop est effectué, car on a déjà créé le nouveau dataframe
+    
     print('Dropping useless Transfer ...', end="")
     dataframe.drop(dataframe[impossibleTransfer].index, inplace=True)
     print('Done')
 
-    #retirer les opérations de cashout incohérentes, à savoir : retirer plus d'argent que disponible / avoir plus d'argent sur le compte après le cashout qu'avant  
+    #retirer les opérations de cashout incohérentes, à savoir : retirer plus d'argent que disponible 
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
-    nonCoherentCashout = (dataframe['type'] == 'CASH-OUT') & ((dataframe['amount'] > dataframe['oldbalanceOrg']) |( dataframe['newbalanceOrig'] > dataframe['oldbalanceOrg']))
+    nonCoherentCashout = (dataframe['type'] == 'CASH-OUT') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
 
     print('Dropping useless cashout ...', end="")
     dataframe.drop(dataframe[nonCoherentCashout].index, inplace=True)
     print('Done')
-
-    #retirer les opérations de cashin incohérentes, à savoir : recevoir plus d'argent que la quantité ajoutée
-    #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
-    nonCoherentCashIn = (dataframe['type'] == 'CASH_IN') & (dataframe['newbalanceOrig'] != dataframe['oldbalanceOrg'] + dataframe['amount']) 
-
-    print('Dropping useless cashin ...', end="")
-    dataframe.drop(dataframe[nonCoherentCashIn].index, inplace=True)
-    print('Done')
-
+    
     #retirer les opération de paiements incohérentes, à savoir : payer plus d'argent que disponible sur le compte d'origine
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     nonCoherentPayment = (dataframe['type'] == 'PAYMENT') & (dataframe['amount'] > dataframe['oldbalanceOrg'])

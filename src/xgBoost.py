@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 
@@ -38,3 +38,4 @@ def xgbooster(dataframe: pd.DataFrame, target: pd.Series):
     # - true positive (fraud data predicted to be fraud data) and false negative (fraud data predicted to be clean data)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
+    print(f'f1 score: {f1_score(y_test, y_pred_binary)}')

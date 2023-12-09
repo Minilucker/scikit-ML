@@ -1,10 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 from joblib import dump
-import cleanr
+
 
 def randomForestClassificator(relevant_columns, target):
     print('Splitting ...', end="")
@@ -31,3 +30,4 @@ def randomForestClassificator(relevant_columns, target):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f'Confusion: \n{confusion}')
+    print(f'f1 score: {f1_score(y_test, y_pred)}')

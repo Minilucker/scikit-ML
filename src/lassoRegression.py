@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Lasso
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 import joblib
 
 def lassoRegressor(dataframe: pd.DataFrame, criteria: pd.Series):
@@ -34,5 +34,6 @@ def lassoRegressor(dataframe: pd.DataFrame, criteria: pd.Series):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
+    print(f'f1 score: {f1_score(y_test, y_pred_binary)}')
     joblib.dump(model, 'models/lassoRegression')
 

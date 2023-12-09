@@ -1,12 +1,8 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 from pandas import DataFrame, Series
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.cluster import AgglomerativeClustering
-from scipy.cluster.hierarchy import dendrogram, linkage
-from sklearn.metrics import confusion_matrix, silhouette_score, accuracy_score
-import cleanr
+from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
+
 
 def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series):
  
@@ -40,3 +36,4 @@ def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series):
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
+    print(f'f1 score: {f1_score(y_test, y_pred)}')
