@@ -38,34 +38,34 @@ def autoImputNullValuesBasedOnType(dataframe: DataFrame):
     for column_name in dataframe.columns:
             if not isNullCellInColumn(dataframe[column_name]):
                 continue
-            print("----------------------------------------------------------------------------------------------------")
-            print(f"Null found in column with name: {column_name}")
+            #print("----------------------------------------------------------------------------------------------------")
+            #print(f"Null found in column with name: {column_name}")
             # on ne check que si c'est de type float64, car si il y a un null la colonne devient automatiquement de type float64 a moins d'être un dtype object
             # à améliorer selon les autres types possibles
             if dataframe[column_name].dtype != 'float64':
-                print(f"Column {column_name} is of type String")
+                #print(f"Column {column_name} is of type String")
                 available_values = dataframe[column_name].dropna().unique()
-                print(f"Imputing random value from these: {available_values} ...", end=" ")
+                #print(f"Imputing random value from these: {available_values} ...", end=" ")
                 dataframe[column_name].fillna(np.random.choice(available_values), inplace=True)
-                print("Done")
-                print("----------------------------------------------------------------------------------------------------")
+                #print("Done")
+                #print("----------------------------------------------------------------------------------------------------")
             elif dataframe[column_name].dtype == 'float64' and checkIfTrulyFloatValue(dataframe[column_name]):
-                print(f"Column {column_name} is of type Float")
-                print(f"Imputing mean value from column {column_name}")
+                #print(f"Column {column_name} is of type Float")
+                #print(f"Imputing mean value from column {column_name}")
                 dataframe[column_name].fillna(dataframe[column_name].mean(), inplace=True)
-                print("----------------------------------------------------------------------------------------------------")
+                #print("----------------------------------------------------------------------------------------------------")
             else: 
-                print(f"Column {column_name} is neither String nor Float, finding out...", end=" ")
+                #print(f"Column {column_name} is neither String nor Float, finding out...", end=" ")
                 if isBoolColumn(dataframe[column_name]):
-                    print(f"Column {column_name} is a boolean column")
+                    #print(f"Column {column_name} is a boolean column")
                     dataframe[column_name].fillna(value=0, inplace=True)
-                    print("----------------------------------------------------------------------------------------------------")
+                    #print("----------------------------------------------------------------------------------------------------")
                 # cas où c'est un int64
                 else: 
-                    print(f"Column {column_name} is an int column")
+                    #print(f"Column {column_name} is an int column")
                     dataframe[column_name] = dataframe[column_name].interpolate(method='linear').astype(int)
-                    print(f"added value based on neighbour values")
-                    print("----------------------------------------------------------------------------------------------------")
+                    #print(f"added value based on neighbour values")
+                    #print("----------------------------------------------------------------------------------------------------")
             
 
 def checkIfTrulyFloatValue(series):
@@ -81,46 +81,44 @@ def checkIfTrulyFloatValue(series):
 
 
 def clearWrongValues(dataframe: DataFrame):
-    #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte / le compte de destination ne reçoit pas exactement la somme envoyée
+    #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     impossibleTransfer = (dataframe['type'] == 'TRANSFER') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
 
     ##modifie directement le dataset ou le drop est effectué, car on a déjà créé le nouveau dataframe
     
-    print('Dropping useless Transfer ...', end="")
+    ##print('Dropping useless Transfer ...', end="")
     dataframe.drop(dataframe[impossibleTransfer].index, inplace=True)
-    print('Done')
+    ##print('Done')
 
     #retirer les opérations de cashout incohérentes, à savoir : retirer plus d'argent que disponible 
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     nonCoherentCashout = (dataframe['type'] == 'CASH-OUT') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
 
-    print('Dropping useless cashout ...', end="")
+    ##print('Dropping useless cashout ...', end="")
     dataframe.drop(dataframe[nonCoherentCashout].index, inplace=True)
-    print('Done')
-    
+    ##print('Done')
+
     #retirer les opération de paiements incohérentes, à savoir : payer plus d'argent que disponible sur le compte d'origine
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     nonCoherentPayment = (dataframe['type'] == 'PAYMENT') & (dataframe['amount'] > dataframe['oldbalanceOrg'])
 
-    print('Dropping useless Payment ...', end="")
+    ##print('Dropping useless Payment ...', end="")
     dataframe.drop(dataframe[nonCoherentPayment].index, inplace=True)
-    print('Done')
+    ##print('Done')
 
 def cleanDataset(dataset: str) :
     df = pd.read_csv(f"datasets/{dataset}")
 
-    filtereddf = df.drop(['nameDest', 'nameOrig'], axis=1) 
+    autoImputNullValuesBasedOnType(df)
+    clearWrongValues(df)
 
-    clearWrongValues(filtereddf)
-    autoImputNullValuesBasedOnType(filtereddf)
+    df.drop('isFraud', axis=1).to_csv(f"testing_datasets/testing_{dataset}")
 
-    filtereddf.drop('isFraud', axis=1).to_csv(f"testing_datasets/testing_{dataset}")
+    #print(f"total number of Rows: {filtereddf['step'].__len__()}")
+    #print(f"total number of Frauds: {filtereddf[filtereddf['isFraud'] == 1]['isFraud'].sum()}")
 
-    print(f"total number of Rows: {filtereddf['step'].__len__()}")
-    print(f"total number of Frauds: {filtereddf[filtereddf['isFraud'] == 1]['isFraud'].sum()}")
-
-    return filtereddf
+    return df
 
 #cleanDataset('datasets\Fraud_nulls.csv')
 #injectNullValues(pd.read_csv('datasets/Fraud.csv'))
