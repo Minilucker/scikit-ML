@@ -16,12 +16,16 @@ import src.xgBoost as xgBoost
 import src.lightgbmregressor as lightgbmregressor
 import src.gaussianMixture as gaussianMixture
 
+
+# arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dataset', help='the dataset to use')
 parser.add_argument('-m', '--mode', help='the algorithm to use from the following: \nLogistic Regression (loReg)\nLinear Regression (liReg)\nRidge Regression (riReg)\nLasso Regression (laReg)\nDecision Tree (dt)\nRandomForest (rf)\nGradient Boosting (gbr)\nXGBoost (xgb)\nLightGBM Regressor (lgbr)\n K Mean (kmean)\nHierarchical Clustering (hc)\nGaussian Mixture Model (gmm)\n')
 args = parser.parse_args()
 
 dataset = args.dataset.replace('..', '').replace('/', '').replace('\\', '')
+
+ 
 if not args.dataset:
     print("python3 <location>/trainer.py --dataset your_dataset")
     print("make sure to include your dataset in 'datasets/' folder'")
@@ -42,8 +46,8 @@ features_encoded.drop(['type'], axis=1, inplace=True)
 # column to predict the value of
 criteria = df['isFraud']
 model_type: str = args.mode
-starting_float = time.time()
 
+# assigne le fichier de log selon le dataset
 if (args.dataset == 'Fraud.csv'):
     logfile = open("originalDatasetLogs.txt", "a")
 elif (args.dataset == 'small_Frauds.csv'):
@@ -51,6 +55,8 @@ elif (args.dataset == 'small_Frauds.csv'):
 else:
     logfile = open("nullDatasetLogs.txt", 'a')
 
+
+# match case pour choisir l'algorithme selon l'argument du script
 match(model_type):
     case 'loReg':
         logfile.write("starting in Logistic regression\n")
@@ -96,5 +102,3 @@ match(model_type):
         logfile.write("starting in Gaussian Mixture mode\n")
         print("starting in Gaussian Mixture mode")
         gaussianMixture.gaussianMixture(features_encoded, criteria, logfile)
-
-print(f"total time: {time.time() - starting_float}")
