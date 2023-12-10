@@ -3,7 +3,6 @@ from turtle import clear
 import pandas as pd
 from pandas import DataFrame, Series
 import numpy as np
-import os
 #inject null values in a datasets
 def injectNullValues(dataframe: DataFrame):
     for column in dataframe.columns:
@@ -81,31 +80,24 @@ def checkIfTrulyFloatValue(series):
 
 
 def clearWrongValues(dataframe: DataFrame):
+   
     #retirer les opération de transfer incohérentes, à savoir : transférer plus d'argent que disponible sur le compte
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     impossibleTransfer = (dataframe['type'] == 'TRANSFER') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
-
-    ##modifie directement le dataset ou le drop est effectué, car on a déjà créé le nouveau dataframe
     
-    ##print('Dropping useless Transfer ...', end="")
     dataframe.drop(dataframe[impossibleTransfer].index, inplace=True)
-    ##print('Done')
 
     #retirer les opérations de cashout incohérentes, à savoir : retirer plus d'argent que disponible 
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     nonCoherentCashout = (dataframe['type'] == 'CASH-OUT') & ((dataframe['amount'] > dataframe['oldbalanceOrg']))
 
-    ##print('Dropping useless cashout ...', end="")
     dataframe.drop(dataframe[nonCoherentCashout].index, inplace=True)
-    ##print('Done')
 
     #retirer les opération de paiements incohérentes, à savoir : payer plus d'argent que disponible sur le compte d'origine
     #définition de la condition du prochain filtre pour qu'elle soit définie selon le dataset actuel (avec les filtres précédents)
     nonCoherentPayment = (dataframe['type'] == 'PAYMENT') & (dataframe['amount'] > dataframe['oldbalanceOrg'])
 
-    ##print('Dropping useless Payment ...', end="")
     dataframe.drop(dataframe[nonCoherentPayment].index, inplace=True)
-    ##print('Done')
 
 def cleanDataset(dataset: str) :
     df = pd.read_csv(f"datasets/{dataset}")
@@ -115,10 +107,7 @@ def cleanDataset(dataset: str) :
 
     df.drop('isFraud', axis=1).to_csv(f"testing_datasets/testing_{dataset}")
 
-    #print(f"total number of Rows: {filtereddf['step'].__len__()}")
-    #print(f"total number of Frauds: {filtereddf[filtereddf['isFraud'] == 1]['isFraud'].sum()}")
-
     return df
 
-#cleanDataset('datasets\Fraud_nulls.csv')
+#pour générer un dataset avec des valeurs null
 #injectNullValues(pd.read_csv('datasets/Fraud.csv'))

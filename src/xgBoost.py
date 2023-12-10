@@ -2,22 +2,17 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from xgboost import XGBRegressor
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
-from sklearn.preprocessing import LabelEncoder
-import matplotlib.pyplot as plt
-
-# Assuming your DataFrame is named 'df' and the target category is 'target_category'
-# Make sure to replace 'target_category' with the actual column name in your DataFrame
+import time
 
 def xgbooster(dataframe: pd.DataFrame, target: pd.Series, logfile):    
    
+    timer_start = time.time()
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, target, test_size=0.2, random_state=42)
     print("Done")
 
-    # use the LogisticRegression to properly separate the fraud data from the normal data
+    # use the XGBRegressor to properly separate the fraud data from the normal data
     print("Creating model ...", end="")
-    # setting max_iteration number to reach convergence(= the most optimum result with the least failure,
-    # whereas with 100 max_iter we can only reach what's called local optima a.k.a the most optimised model for the 100 given iterations)
     model = XGBRegressor()
     print("Done\nBeginning training...", end="")
 
@@ -29,15 +24,18 @@ def xgbooster(dataframe: pd.DataFrame, target: pd.Series, logfile):
     y_pred = model.predict(X_test)
 
     y_pred_binary = (y_pred > 0.5).astype(int)
+    
     # accuracy, the percentage of success in the prediction (0 is bad, whereas 1 is 100% accuracy, 1 should not be possible and might be an error)
     acc = accuracy_score(y_test, y_pred=y_pred_binary)
-    confusion = confusion_matrix(y_test, y_pred_binary)
-
+    
     # confusion, return an array containing 2 arrays, each containing respectively: 
     # - true negative (clean data predicted to be clean data) and false positive (clean data predicted to be fraud data),
     # - true positive (fraud data predicted to be fraud data) and false negative (fraud data predicted to be clean data)
+    confusion = confusion_matrix(y_test, y_pred_binary)
+    f1 = f1_score(y_test, y_pred_binary)
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
-    print(f'f1 score: {f1_score(y_test, y_pred_binary)}')
+    print(f'f1 score: {f1}')
 
-    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred_binary)}\n'])
+    print(f'total time: {time.time() - timer_start}')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1}\n', f'total time: {time.time() - timer_start}'])
