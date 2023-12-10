@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.decomposition import PCA
 import argparse
 import src.cleanr as cleanr
 import src.logisticRegressor as logisticRegressor
@@ -13,7 +14,6 @@ import src.decisionTree as decisionTree
 import src.GradientBoosting as GradientBoosting 
 import src.xgBoost as xgBoost
 import src.lightgbmregressor as lightgbmregressor
-import src.kMean as kMean
 import src.gaussianMixture as gaussianMixture
 
 parser = argparse.ArgumentParser()
@@ -27,11 +27,11 @@ if not args.dataset:
     print("make sure to include your dataset in 'datasets/' folder'")
     exit(1)
 
-print("Preparing dataset ...")
+#print("Preparing dataset ...")
 df = cleanr.cleanDataset(f'{args.dataset}')
 
 # relevant columns
-features = df[['isFlaggedFraud', 'step','oldbalanceOrg', 'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest', 'amount', 'type']]
+features = df[['step','oldbalanceOrg', 'newbalanceOrig', 'oldbalanceDest', 'newbalanceDest', 'amount', 'type']]
 
 # one-hot encode the 'type' column
 onehot_encoder = OneHotEncoder(sparse_output=False, drop='first')
@@ -43,42 +43,58 @@ features_encoded.drop(['type'], axis=1, inplace=True)
 criteria = df['isFraud']
 model_type: str = args.mode
 starting_float = time.time()
+
+if (args.dataset == 'Fraud.csv'):
+    logfile = open("originalDatasetLogs.txt", "a")
+elif (args.dataset == 'small_Frauds.csv'):
+    logfile = open("smallDatasetLogs.txt", "a")
+else:
+    logfile = open("nullDatasetLogs.txt", 'a')
+
 match(model_type):
     case 'loReg':
+        logfile.write("starting in Logistic regression\n")
         print("starting in Logistic regression")
-        logisticRegressor.logisticRegressor(features_encoded, criteria)
+        logisticRegressor.logisticRegressor(features_encoded, criteria, logfile)
     case 'liReg':
+        logfile.write("starting in Linear regression mode\n")
         print("starting in Linear regression mode")
-        linearRegression.linearRegressor(features_encoded, criteria)
+        linearRegression.linearRegressor(features_encoded, criteria, logfile)
     case 'riReg':
+        logfile.write("starting in Ridge regression mode\n")        
         print("starting in Ridge regression mode")
-        ridgeRegression.ridgeRegressor(features_encoded, criteria)
+        ridgeRegression.ridgeRegressor(features_encoded, criteria, logfile)
     case 'laReg': 
+        logfile.write("starting in Lasso regression mode\n")
         print("starting in Lasso regression mode")
-        lassoRegression.lassoRegressor(features_encoded, criteria)
+        lassoRegression.lassoRegressor(features_encoded, criteria, logfile)
     case 'dt':
+        logfile.write("starting in Decision Tree mode\n")
         print("starting in Decision Tree mode")
-        decisionTree.decisionTreeClassifier(features_encoded, criteria)
+        decisionTree.decisionTreeClassifier(features_encoded, criteria, logfile)
     case 'rf':
+        logfile.write("starting in Random Forest Classifier mode\n")
         print("starting in Random Forest Classifier mode")
-        RandomForest.randomForestClassificator(features_encoded, criteria)
+        RandomForest.randomForestClassificator(features_encoded, criteria, logfile)
     case 'gbr':
+        logfile.write("starting in Gradient Boosting Regression mode\n")
         print("starting in Gradient Boosting Regression mode")
-        GradientBoosting.GradientBoostingRegress(features_encoded, criteria)
+        GradientBoosting.GradientBoostingRegress(features_encoded, criteria, logfile)
     case 'xgb':
+        logfile.write("starting in xgbooster mode\n")
         print("starting in xgbooster mode")
-        xgBoost.xgbooster(features_encoded, criteria)
+        xgBoost.xgbooster(features_encoded, criteria, logfile)
     case 'lgbr':
+        logfile.write("starting in Light GMB Regression mode\n")
         print("starting in Light GMB Regression mode")
-        lightgbmregressor.lightbgmregressor(features_encoded, criteria)
-    case 'kmean':
-        print("starting in K Mean Cluster mode")
-        kMean.kmeancluster(features_encoded, criteria)
+        lightgbmregressor.lightbgmregressor(features_encoded, criteria, logfile)
     case 'hc':
+        logfile.write("starting in Hierarchical Cluster mode\n")        
         print("starting in Hierarchical Cluster mode")
-        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded, criteria)
+        HierarchicalClustering.hierarchicalClusteringModeler(features_encoded, criteria, logfile)
     case 'gmm':
+        logfile.write("starting in Gaussian Mixture mode\n")
         print("starting in Gaussian Mixture mode")
-        gaussianMixture.gaussianMixture(features_encoded, criteria)
+        gaussianMixture.gaussianMixture(features_encoded, criteria, logfile)
 
 print(f"total time: {time.time() - starting_float}")

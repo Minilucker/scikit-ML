@@ -5,7 +5,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 
 # Assuming your DataFrame is named 'df' and the target category is 'target_category'
 # Make sure to replace 'target_category' with the actual column name in your DataFrame
-def GradientBoostingRegress(dataframe: pd.DataFrame, target: pd.Series):
+def GradientBoostingRegress(dataframe: pd.DataFrame, target: pd.Series, logfile):
     
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, target, test_size=0.2, random_state=42)
@@ -36,3 +36,4 @@ def GradientBoostingRegress(dataframe: pd.DataFrame, target: pd.Series):
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
     print(f'f1 score: {f1_score(y_test, y_pred_binary)}')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred_binary)}\n'])

@@ -21,7 +21,7 @@ from joblib import dump
 ## column to predict the value of
 #criteria = df['isFraud']
 
-def logisticRegressor(relevant_columns, target):
+def logisticRegressor(relevant_columns, target, logfile):
 
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(relevant_columns, target, test_size=0.2, random_state=42)
@@ -48,8 +48,9 @@ def logisticRegressor(relevant_columns, target):
     # confusion, return an array containing 2 arrays, each containing respectively: 
     # - true positive (clean data predicted to be clean data) and false positive (fraud predicted to be clean data),
     # - true negative (fraud data predicted to be fraud data) and false negative (clean data predicted to be fraud data)
-    print(y_pred)
-    print(y_test)
-    print(f'Accuracy: {acc}')
-    print(f"Confusion: \n{confusion}")
-    print(f'f1 score: {f1_score(y_test, y_pred)}')
+
+    print(f'Accuracy: {acc}\n')
+    print(f"Confusion: \n{confusion}\n")
+    print(f'f1 score: {f1_score(y_test, y_pred)}\n')
+
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred)}\n'])

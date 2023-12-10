@@ -4,7 +4,7 @@ from sklearn.linear_model import Lasso
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 import joblib
 
-def lassoRegressor(dataframe: pd.DataFrame, criteria: pd.Series):
+def lassoRegressor(dataframe: pd.DataFrame, criteria: pd.Series, logfile):
     
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, criteria, test_size=0.2, random_state=42)
@@ -35,5 +35,5 @@ def lassoRegressor(dataframe: pd.DataFrame, criteria: pd.Series):
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
     print(f'f1 score: {f1_score(y_test, y_pred_binary)}')
-    joblib.dump(model, 'models/lassoRegression')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred_binary)}\n'])
 

@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Ridge
 from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 
-def ridgeRegressor(dataframe, criteria):
+def ridgeRegressor(dataframe, criteria, logfile):
     
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(dataframe, criteria, test_size=0.2, random_state=42)
@@ -34,3 +34,4 @@ def ridgeRegressor(dataframe, criteria):
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
     print(f'f1 score: {f1_score(y_test, y_pred_binary)}')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred_binary)}\n'])

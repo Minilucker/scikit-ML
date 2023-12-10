@@ -5,7 +5,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 from joblib import dump
 
 
-def randomForestClassificator(relevant_columns, target):
+def randomForestClassificator(relevant_columns, target, logfile):
     print('Splitting ...', end="")
     X_train, X_test, y_train, y_test = train_test_split(relevant_columns, target, test_size=0.2, random_state=42)
     print("Done")
@@ -31,3 +31,4 @@ def randomForestClassificator(relevant_columns, target):
     print(f'Accuracy: {acc}')
     print(f'Confusion: \n{confusion}')
     print(f'f1 score: {f1_score(y_test, y_pred)}')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred)}\n'])

@@ -4,7 +4,7 @@ from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score
 
 
-def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series):
+def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series, logfile):
  
     print('Splitting ...', end="")
     dataframe = dataframe.sample(frac=0.01)
@@ -37,3 +37,4 @@ def hierarchicalClusteringModeler(dataframe: DataFrame, target: Series):
     print(f'Accuracy: {acc}')
     print(f"Confusion: \n{confusion}")
     print(f'f1 score: {f1_score(y_test, y_pred)}')
+    logfile.writelines([f'Accuracy: {acc}\n', f"Confusion: \n{confusion}\n", f'f1 score: {f1_score(y_test, y_pred)}\n'])
